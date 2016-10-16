@@ -19,18 +19,42 @@ var {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  ActivityIndicator
 } = ReactNative;
 
 var Login = require('./Login');
+var AuthService = require('./AuthService');
+var AppContainer = require('./AppContainer');
 
 var GithubBrowser = React.createClass({
+
+  componentDidMount: function(){
+    AuthService.getAuthInfo((err, authInfo) => { //handle errors gracefully: e.g. update a state variable state.error and display message if error occured 
+      this.setState({
+        checkingAuth: false,
+        isLoggedIn: authInfo != null
+      })
+    })
+  },
+
   render: function(){
 
+    if(this.state.checkingAuth){
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator 
+            animating = {true}
+            size="large"
+            style={styles.loader} />
+        </View>
+      );
+    }
+
     if(this.state.isLoggedIn){
-      return ( <View style={styles.container} > 
-                  <Text style={styles.welcome}> Logged In !!! </Text> 
-              </View>);
+      return (
+        <AppContainer />
+        );
     }
     else{
       return ( <Login onLogin={this.onLogin}/>);
@@ -43,7 +67,8 @@ var GithubBrowser = React.createClass({
 
   getInitialState: function(){ //initializing state bc not a es6 component and created using createClass we use this method to initialize
     return {
-      isLoggedIn : false
+      isLoggedIn : false,
+      checkingAuth: true
     }
   }
 });

@@ -16,7 +16,7 @@ var {
   View,
   Image,
   TouchableHighlight,
-  ActivityIndicatorIOS  //progress spinner
+  ActivityIndicator  //progress spinner
 } = ReactNative;
 
 class Login extends Component{ //ES6 syntax
@@ -75,7 +75,7 @@ class Login extends Component{ //ES6 syntax
 
                 {errorCtrl}
 
-                <ActivityIndicatorIOS
+                <ActivityIndicator
                     animating={this.state.showProgress}
                     size="large" 
                     style = {styles.loader}/>
