@@ -1,6 +1,8 @@
-var buffer = require('buffer');
+//var buffer = require('buffer');
 var AsyncStorage = require('react-native').AsyncStorage;
 var _ = require('lodash');
+
+var encoding = require('NativeModules').Encoding; //NativeModules holds on the obj c interfaces that you exported using RCTExportModule 
 
 const authKey = 'auth';
 const userKey = "user";
@@ -36,10 +38,9 @@ class AuthService{
             password = creds.password;
         
         //encoding username and password - that's what git requires
-        var buff = new buffer.Buffer(username + ":" + password);
-        var encodedAuth = buff.toString('base64');
-
-        //http request - promise base
+        var authStr = username + ":" + password;
+        encoding.base64Encode(authStr, (encodedAuth)=> {
+            //http request - promise base
         fetch('https://api.github.com/user', {
             headers:{
                 'Authorization' : 'Basic ' + encodedAuth
@@ -73,6 +74,11 @@ class AuthService{
         .catch((err) => {
             return callback(err);
         });
+        });
+        // var buff = new buffer.Buffer(username + ":" + password);
+        // var encodedAuth = buff.toString('base64');
+
+        
 
     }
 }

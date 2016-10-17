@@ -12,10 +12,12 @@ var {
   Text,
   View,
   StyleSheet,
-  TabBarIOS
+  TabBarIOS,
+  NavigatorIOS
 } = ReactNative;
 
 var Feed = require('./Feed');
+var Search = require('./Search');
 
 class AppContainer extends Component{ //ES6 syntax
     constructor(props){
@@ -36,7 +38,12 @@ class AppContainer extends Component{ //ES6 syntax
                     icon={require('image!inbox')}
                     onPress ={() => this.setState({selectedTab: 'feed'})}
                 >
-                    <Feed />
+                    <NavigatorIOS
+                        style={{flex: 1}}
+                        initialRoute={{
+                            component: Feed,
+                            title: 'Feed'
+                        }}/>
                 </TabBarIOS.Item>
                 <TabBarIOS.Item
                     title = "Search"
@@ -44,7 +51,12 @@ class AppContainer extends Component{ //ES6 syntax
                     icon={require('image!Search')}
                     onPress ={() => this.setState({selectedTab: 'search'})}
                 >
-                    <Text style={styles.welcome}> Tab 2 </Text>
+                    <NavigatorIOS
+                        style={{flex: 1}}
+                        initialRoute={{
+                            component: Search,
+                            title: 'Search'
+                        }}/>
                 </TabBarIOS.Item>
             </TabBarIOS>
             );

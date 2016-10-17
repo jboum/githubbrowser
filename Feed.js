@@ -14,11 +14,13 @@ var {
   StyleSheet,
   ListView,
   ActivityIndicator,
-  Image
+  Image,
+  TouchableHighlight,
 } = ReactNative;
 
 var AuthService = require('./AuthService');
 var moment = require('moment');
+var PushPayload = require('./PushPayload');
 
 class Feed extends Component{ //ES6 syntax
     constructor(props){
@@ -65,21 +67,36 @@ class Feed extends Component{ //ES6 syntax
     }
     renderRow(rowData, sectionId, rowId){
         return (
-            <View style={styles.row}>
-                <Image 
-                    source={{uri: rowData.actor.avatar_url}}
-                    style={styles.img}
-                />
+            <TouchableHighlight
+                onPress= {()=> this.pressRow(rowData)}
+                underlayColor = '#ddd'>
+                <View style={styles.row}>
+                    <Image 
+                        source={{uri: rowData.actor.avatar_url}}
+                        style={styles.img}
+                    />
 
-                <View style={{paddingLeft: 20}}>
-                    <Text> {moment(rowData.created_at).fromNow()} </Text>
-                    <Text> {rowData.actor.login} pushed to </Text>
-                    <Text> {rowData.payload.ref.replace('refs/heads/', '')} </Text>
-                    <Text> {rowData.repo.name} </Text>
-                </View> 
+                    <View style={{paddingLeft: 20}}>
+                        <Text> {moment(rowData.created_at).fromNow()} </Text>
+                        <Text> {rowData.actor.login} pushed to </Text>
+                        <Text> {rowData.payload.ref.replace('refs/heads/', '')} </Text>
+                        <Text> {rowData.repo.name} </Text>
+                    </View> 
 
-            </View>
+                </View>
+            </TouchableHighlight>
         )
+    }
+
+    pressRow(rowData){
+        //since we set Feed component on navigator, navigator ensures that we have a references to itself on the Feed component
+        this.props.navigator.push({
+            title: 'PushEvent',
+            component: PushPayload,
+            passProps: { //the object will passed to the component on the constructor when navigated to it
+                pushEvent: rowData
+            }
+        });
     }
 
     render(){
@@ -103,7 +120,7 @@ const styles = StyleSheet.create({
     view: {
         flex: 1,
         justifyContent: 'flex-start',
-        marginTop: 20
+        marginTop: 50
     },
     row: {
         flex: 1,
